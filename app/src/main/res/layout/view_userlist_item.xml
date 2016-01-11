@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/item_list_padding">
+
+    <ImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/item_list_text_padding">
+
+        <TextView
+            android:id="@+id/tvNickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceListItem" />
+
+        <TextView
+            android:id="@+id/tvFollowInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:textAppearance="?attr/textAppearanceListItem" />
+    </FrameLayout>
+
+
+</LinearLayout>

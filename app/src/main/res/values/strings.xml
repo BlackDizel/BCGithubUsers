@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">BCGithubUsers</string>
+
+    <string name="pageAH">A-H</string>
+    <string name="pageIP">I-P</string>
+    <string name="pageQZ">Q-Z</string>
+    <string name="action_search">FIND</string>
+</resources>
