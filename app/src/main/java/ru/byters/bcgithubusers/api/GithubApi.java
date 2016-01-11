@@ -25,4 +25,7 @@ public interface GithubApi {
     @GET("search/users")
     Call<SearchInfo> searchUsers(@Query("q") String query);
 
+    @GET("search/users")
+    Call<SearchInfo> searchUsers(@Query("q") String query, @Query("page") int page);
+
 }
