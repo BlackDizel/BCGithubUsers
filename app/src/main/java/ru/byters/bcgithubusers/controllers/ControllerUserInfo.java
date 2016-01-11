@@ -1,4 +1,4 @@
-package ru.byters.bcgithubusers.ui.controllers;
+package ru.byters.bcgithubusers.controllers;
 
 import android.content.Context;
 import android.os.AsyncTask;

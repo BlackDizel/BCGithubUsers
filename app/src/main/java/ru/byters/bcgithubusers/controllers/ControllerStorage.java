@@ -1,4 +1,4 @@
-package ru.byters.bcgithubusers.ui.controllers;
+package ru.byters.bcgithubusers.controllers;
 
 import android.app.Activity;
 import android.content.Context;
