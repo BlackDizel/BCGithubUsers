@@ -53,6 +53,7 @@ public class FragmentList extends Fragment implements SwipeRefreshLayout.OnRefre
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         adapter = new UsersListAdapter(filterType, controllerUserInfo);
+        adapter.setScrolledListener(controllerUserInfo);
         recyclerView.setAdapter(adapter);
 
         scrollListener = new ScrollListener((LinearLayoutManager) recyclerView.getLayoutManager()) {

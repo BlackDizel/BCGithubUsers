@@ -12,14 +12,16 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 
 import ru.byters.bcgithubusers.R;
-import ru.byters.bcgithubusers.model.UserInfo;
 import ru.byters.bcgithubusers.controllers.ControllerUserInfo;
+import ru.byters.bcgithubusers.controllers.utils.OnScrolled;
+import ru.byters.bcgithubusers.model.UserInfo;
 
 public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.ViewHolder> {
 
     private int filterType;
     private ArrayList<UserInfo> data;
     private ControllerUserInfo controllerUserInfo;
+    private OnScrolled scrolledListener;
 
     public UsersListAdapter(int filterType, ControllerUserInfo controllerUserInfo) {
         this.filterType = filterType;
@@ -32,9 +34,13 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
         return filterType;
     }
 
+    public void setScrolledListener(OnScrolled scrolledListener) {
+        this.scrolledListener = scrolledListener;
+    }
+
     public void onScrolled() {
-        if (filterType != 0)
-            controllerUserInfo.getUsersMore();
+        if (scrolledListener != null)
+            scrolledListener.onScrolled();
     }
 
     public void resetData() {

@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 import ru.byters.bcgithubusers.api.GithubService;
 import ru.byters.bcgithubusers.controllers.utils.OnDownloaded;
+import ru.byters.bcgithubusers.controllers.utils.OnScrolled;
 import ru.byters.bcgithubusers.model.UserInfo;
 import ru.byters.bcgithubusers.ui.adapters.UsersListAdapter;
 
-public class ControllerFind implements OnDownloaded {
+public class ControllerFind implements OnDownloaded, OnScrolled {
 
     UsersListAdapter adapter;
     private String query;
@@ -30,6 +31,11 @@ public class ControllerFind implements OnDownloaded {
     public void onDownloaded(String query, ArrayList<UserInfo> data) {
         if (query.equals(this.query) && data != null)
             adapter.addData(data);
+    }
+
+    @Override
+    public void onScrolled() {
+        //todo implement
     }
 
     private class TaskFind extends AsyncTask<Void, Void, ArrayList<UserInfo>> {

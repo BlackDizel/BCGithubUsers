@@ -8,11 +8,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ru.byters.bcgithubusers.api.GithubService;
+import ru.byters.bcgithubusers.controllers.utils.OnScrolled;
 import ru.byters.bcgithubusers.model.ModelUserInfo;
 import ru.byters.bcgithubusers.model.UserInfo;
 import ru.byters.bcgithubusers.ui.adapters.UsersListAdapter;
 
-public class ControllerUserInfo {
+public class ControllerUserInfo implements OnScrolled {
 
     private static ModelUserInfo modelUserInfo;
     private static boolean isLoading;
@@ -108,7 +109,7 @@ public class ControllerUserInfo {
         }.execute();
     }
 
-    public void setRefreshLayout(SwipeRefreshLayout refreshLayout){
+    public void setRefreshLayout(SwipeRefreshLayout refreshLayout) {
         this.refreshLayout = refreshLayout;
     }
 
@@ -118,5 +119,10 @@ public class ControllerUserInfo {
             modelUserInfo.clearData(context);
             getUsers();
         }
+    }
+
+    @Override
+    public void onScrolled() {
+        getUsersMore();
     }
 }

@@ -39,6 +39,7 @@ public class ActivityMain extends AppCompatActivity
 
         UsersListAdapter listAdapter = new UsersListAdapter(0, new ControllerUserInfo(this));
         controllerFind = new ControllerFind(listAdapter);
+        listAdapter.setScrolledListener(controllerFind);
 
         rvFound = (RecyclerView) findViewById(R.id.rvFound);
         rvFound.setAdapter(listAdapter);
