@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import ru.byters.bcgithubusers.R;
 import ru.byters.bcgithubusers.ui.adapters.UsersListAdapter;
-import ru.byters.bcgithubusers.ui.controllers.ControllerUserInfo;
+import ru.byters.bcgithubusers.controllers.ControllerUserInfo;
 
 public class FragmentList extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 

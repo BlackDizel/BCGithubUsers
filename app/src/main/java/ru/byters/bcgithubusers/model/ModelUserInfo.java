@@ -5,7 +5,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-import ru.byters.bcgithubusers.ui.controllers.ControllerStorage;
+import ru.byters.bcgithubusers.controllers.ControllerStorage;
 
 public class ModelUserInfo {
 
