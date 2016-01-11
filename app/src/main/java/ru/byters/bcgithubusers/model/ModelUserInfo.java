@@ -92,4 +92,13 @@ public class ModelUserInfo {
     public int getLastLogin() {
         return lastLogin;
     }
+
+    public void updateData(UserInfo data) {
+        if (listUserInfo == null || data == null) return;
+        for (UserInfo info : listUserInfo)
+            if (info.getLogin().equals(data.getLogin())) {
+                info.setFollowers(data.getFollowers());
+                info.setFollowing(data.getFollowing());
+            }
+    }
 }

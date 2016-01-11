@@ -1,5 +1,6 @@
 package ru.byters.bcgithubusers.ui.adapters;
 
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +10,13 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import ru.byters.bcgithubusers.R;
+import ru.byters.bcgithubusers.api.GithubService;
 import ru.byters.bcgithubusers.controllers.ControllerUserInfo;
+import ru.byters.bcgithubusers.controllers.utils.OnDownloadedFollowers;
 import ru.byters.bcgithubusers.model.UserInfo;
 
 public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.ViewHolder> {
@@ -65,10 +69,11 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
         return data == null ? 0 : data.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements OnDownloadedFollowers {
         private final TextView tvNickname;
         private final TextView tvFollowInfo;
         private final ImageView ivAvatar;
+        private String login;
 
         public ViewHolder(View view) {
             super(view);
@@ -80,9 +85,48 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
         public void setData(int position) {
             UserInfo info = data.get(position);
             if (info != null) {
+                login = info.getLogin();
                 tvNickname.setText(info.getLogin());
                 ImageLoader.getInstance().displayImage(info.getAvatar_url(), ivAvatar);
-                //todo implement followers info
+                tvFollowInfo.setText(String.format("%d/%d", info.getFollowers(), info.getFollowing()));
+                if (info.getFollowing() == 0 || info.getFollowers() == 0)
+                    new TaskFollowers(login, this).execute();
+            }
+        }
+
+        @Override
+        public void onDownloaded(String login, UserInfo data) {
+            //todo update data
+            controllerUserInfo.getModelUserInfo().updateData(data);
+            if (this.login.equals(login) && data != null)
+                tvFollowInfo.setText(String.format("%d/%d", data.getFollowers(), data.getFollowing()));
+        }
+
+        private class TaskFollowers extends AsyncTask<Void, Void, UserInfo> {
+
+            OnDownloadedFollowers listener;
+            String login;
+
+            public TaskFollowers(String login, OnDownloadedFollowers listener) {
+                this.login = login;
+                this.listener = listener;
+            }
+
+            @Override
+            protected UserInfo doInBackground(Void... params) {
+                //todo add v23 check permission
+                try {
+                    return GithubService.getApi().getUserInfo(login).execute().body();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(UserInfo userInfo) {
+                super.onPostExecute(userInfo);
+                if (listener != null) listener.onDownloaded(login, userInfo);
             }
         }
     }

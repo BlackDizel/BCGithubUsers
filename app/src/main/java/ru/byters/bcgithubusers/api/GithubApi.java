@@ -14,7 +14,7 @@ public interface GithubApi {
     String BASE_URL = "https://api.github.com/";
 
     @GET("users/{username}")
-    Call<UserInfo> getUserInfo(@Path("username") int username);
+    Call<UserInfo> getUserInfo(@Path("username") String username);
 
     @GET("users")
     Call<ArrayList<UserInfo>> getUsers(@Query("since") int id);
