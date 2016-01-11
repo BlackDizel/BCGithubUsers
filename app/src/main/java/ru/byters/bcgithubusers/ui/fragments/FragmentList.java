@@ -12,15 +12,15 @@ import android.view.ViewGroup;
 import ru.byters.bcgithubusers.R;
 import ru.byters.bcgithubusers.ui.adapters.UsersListAdapter;
 import ru.byters.bcgithubusers.controllers.ControllerUserInfo;
+import ru.byters.bcgithubusers.ui.utils.ScrollListener;
 
 public class FragmentList extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String EXTRA_FILTER_TYPE = "column-count";
+    private static final String EXTRA_FILTER_TYPE = "filter_type";
     private ControllerUserInfo controllerUserInfo;
 
     private int filterType;
     private UsersListAdapter adapter;
-    private SwipeRefreshLayout refreshLayout;
     private ScrollListener scrollListener;
 
     public FragmentList() {
@@ -53,18 +53,17 @@ public class FragmentList extends Fragment implements SwipeRefreshLayout.OnRefre
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         adapter = new UsersListAdapter(filterType, controllerUserInfo);
-        adapter.setScrolledListener(controllerUserInfo);
         recyclerView.setAdapter(adapter);
 
         scrollListener = new ScrollListener((LinearLayoutManager) recyclerView.getLayoutManager()) {
             @Override
             public void onLoadMore() {
-                adapter.onScrolled();
+                controllerUserInfo.getUsersMore();
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
 
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srlList);
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srlList);
         refreshLayout.setOnRefreshListener(this);
 
         controllerUserInfo.setRefreshLayout(refreshLayout);
@@ -83,49 +82,5 @@ public class FragmentList extends Fragment implements SwipeRefreshLayout.OnRefre
         resetData();
         scrollListener.refresh();
         controllerUserInfo.setIsCancelled(getActivity(), true);
-    }
-
-    private abstract class ScrollListener extends RecyclerView.OnScrollListener {
-        private boolean mLoading = false; // True if we are still waiting for the last set of data to load
-
-        private int previousItemCount = 0; // The total number of items in the dataset after the last load
-
-        private LinearLayoutManager mLinearLayoutManager;
-
-        public ScrollListener(LinearLayoutManager linearLayoutManager) {
-            mLinearLayoutManager = linearLayoutManager;
-        }
-
-        public abstract void onLoadMore();
-
-        public void refresh() {
-            previousItemCount = 0;
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-
-            int visibleItemCount = recyclerView.getChildCount();
-            int totalItemCount = mLinearLayoutManager.getItemCount();
-            int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
-
-            // check if current total is greater than previous (diff should be greater than 1, for considering placeholder)
-            // and if current total is equal to the total in server
-            if (mLoading) {
-                if (totalItemCount - previousItemCount > 1) {
-                    mLoading = false;
-                    previousItemCount = totalItemCount;
-                }
-            } else
-                // check if the we've reached the end of the list,
-                // and if the total items is less than the total items in the server
-                if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
-                    onLoadMore();
-                    mLoading = true;
-                    previousItemCount = totalItemCount;
-                }
-        }
-
     }
 }

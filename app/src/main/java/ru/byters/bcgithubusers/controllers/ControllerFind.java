@@ -8,11 +8,10 @@ import java.util.ArrayList;
 
 import ru.byters.bcgithubusers.api.GithubService;
 import ru.byters.bcgithubusers.controllers.utils.OnDownloaded;
-import ru.byters.bcgithubusers.controllers.utils.OnScrolled;
 import ru.byters.bcgithubusers.model.UserInfo;
 import ru.byters.bcgithubusers.ui.adapters.UsersListAdapter;
 
-public class ControllerFind implements OnDownloaded, OnScrolled {
+public class ControllerFind implements OnDownloaded {
 
     UsersListAdapter adapter;
     private String query;
@@ -33,8 +32,7 @@ public class ControllerFind implements OnDownloaded, OnScrolled {
             adapter.addData(data);
     }
 
-    @Override
-    public void onScrolled() {
+    public void loadMore() {
         //todo implement
     }
 

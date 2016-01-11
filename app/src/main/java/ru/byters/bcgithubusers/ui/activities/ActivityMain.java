@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.internal.view.SupportMenuItem;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +20,7 @@ import ru.byters.bcgithubusers.controllers.ControllerUserInfo;
 import ru.byters.bcgithubusers.ui.adapters.UsersListAdapter;
 import ru.byters.bcgithubusers.ui.adapters.ViewPagerAdapter;
 import ru.byters.bcgithubusers.ui.fragments.FragmentList;
+import ru.byters.bcgithubusers.ui.utils.ScrollListener;
 
 public class ActivityMain extends AppCompatActivity
         implements SearchView.OnQueryTextListener, ViewPager.OnPageChangeListener {
@@ -29,6 +31,7 @@ public class ActivityMain extends AppCompatActivity
     RecyclerView rvFound;
     private boolean isSearchMode;
     private ControllerFind controllerFind;
+    private ScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +42,18 @@ public class ActivityMain extends AppCompatActivity
 
         UsersListAdapter listAdapter = new UsersListAdapter(0, new ControllerUserInfo(this));
         controllerFind = new ControllerFind(listAdapter);
-        listAdapter.setScrolledListener(controllerFind);
 
         rvFound = (RecyclerView) findViewById(R.id.rvFound);
         rvFound.setAdapter(listAdapter);
+
+        scrollListener = new ScrollListener((LinearLayoutManager) rvFound.getLayoutManager()) {
+            @Override
+            public void onLoadMore() {
+                controllerFind.loadMore();
+            }
+        };
+        rvFound.addOnScrollListener(scrollListener);
+
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         adapter = new ViewPagerAdapter(this, getSupportFragmentManager());
@@ -97,6 +108,7 @@ public class ActivityMain extends AppCompatActivity
         }
 
         if (newText.length() >= 2) {
+            scrollListener.refresh();
             controllerFind.search(newText);
         }
 
@@ -119,6 +131,7 @@ public class ActivityMain extends AppCompatActivity
     }
 
     void setState() {
+        scrollListener.refresh();
         ((UsersListAdapter) rvFound.getAdapter()).resetData();
         if (isSearchMode) {
             viewPager.setVisibility(View.INVISIBLE);
