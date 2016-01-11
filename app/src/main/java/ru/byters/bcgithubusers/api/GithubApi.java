@@ -6,6 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import ru.byters.bcgithubusers.model.SearchInfo;
 import ru.byters.bcgithubusers.model.UserInfo;
 
 public interface GithubApi {
@@ -22,6 +23,6 @@ public interface GithubApi {
     Call<ArrayList<UserInfo>> getUsers();
 
     @GET("search/users")
-    Call<ArrayList<UserInfo>> searchUsers(@Query("q") String query);
+    Call<SearchInfo> searchUsers(@Query("q") String query);
 
 }
