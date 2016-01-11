@@ -24,8 +24,6 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
     public UsersListAdapter(int filterType, ControllerUserInfo controllerUserInfo) {
         this.filterType = filterType;
         this.controllerUserInfo = controllerUserInfo;
-        if (controllerUserInfo.isNoAdapter()) controllerUserInfo.setUsersListAdapter(this);
-
         data = controllerUserInfo.getModelUserInfo().getUserInfoStartWithFilter(filterType);
     }
 
@@ -39,7 +37,6 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
 
     public void resetData() {
         data = controllerUserInfo.getModelUserInfo().getUserInfoStartWithFilter(filterType);
-        controllerUserInfo.setUsersListAdapter(this);
         notifyDataSetChanged();
     }
 

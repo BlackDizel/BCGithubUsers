@@ -2,22 +2,26 @@ package ru.byters.bcgithubusers.ui.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ru.byters.bcgithubusers.Core;
 import ru.byters.bcgithubusers.R;
 import ru.byters.bcgithubusers.ui.adapters.UsersListAdapter;
+import ru.byters.bcgithubusers.ui.controllers.ControllerUserInfo;
 
-public class FragmentList extends Fragment {
+public class FragmentList extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String EXTRA_FILTER_TYPE = "column-count";
+    private ControllerUserInfo controllerUserInfo;
 
     private int filterType;
     private UsersListAdapter adapter;
+    private SwipeRefreshLayout refreshLayout;
+    private ScrollListener scrollListener;
 
     public FragmentList() {
     }
@@ -45,22 +49,39 @@ public class FragmentList extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view;
-        adapter = new UsersListAdapter(filterType
-                , ((Core) view.getContext().getApplicationContext()).getControllerUserInfo());
+        controllerUserInfo = new ControllerUserInfo(view.getContext());
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        adapter = new UsersListAdapter(filterType, controllerUserInfo);
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new ScrollListener((LinearLayoutManager) recyclerView.getLayoutManager()) {
+
+        scrollListener = new ScrollListener((LinearLayoutManager) recyclerView.getLayoutManager()) {
             @Override
             public void onLoadMore() {
                 adapter.onScrolled();
             }
-        });
+        };
+        recyclerView.addOnScrollListener(scrollListener);
+
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srlList);
+        refreshLayout.setOnRefreshListener(this);
+
+        controllerUserInfo.setRefreshLayout(refreshLayout);
+        controllerUserInfo.setUsersListAdapter(adapter);
+
         return view;
     }
 
     public void resetData() {
         if (adapter != null)
             adapter.resetData();
+    }
+
+    @Override
+    public void onRefresh() {
+        resetData();
+        scrollListener.refresh();
+        controllerUserInfo.setIsCancelled(getActivity(), true);
     }
 
     private abstract class ScrollListener extends RecyclerView.OnScrollListener {
@@ -90,9 +111,11 @@ public class FragmentList extends Fragment {
 
             // check if current total is greater than previous (diff should be greater than 1, for considering placeholder)
             // and if current total is equal to the total in server
-            if (mLoading && (totalItemCount - previousItemCount > 1)) {
-                mLoading = false;
-                previousItemCount = totalItemCount;
+            if (mLoading) {
+                if (totalItemCount - previousItemCount > 1) {
+                    mLoading = false;
+                    previousItemCount = totalItemCount;
+                }
             } else
                 // check if the we've reached the end of the list,
                 // and if the total items is less than the total items in the server

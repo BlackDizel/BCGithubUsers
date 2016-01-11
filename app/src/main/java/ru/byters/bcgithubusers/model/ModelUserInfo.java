@@ -82,6 +82,13 @@ public class ModelUserInfo {
         ControllerStorage.writeObjectToFile(context, lastLogin, ControllerStorage.LASTLOGIN);
     }
 
+    public void clearData(Context context) {
+        lastLogin = 0;
+        listUserInfo = null;
+        ControllerStorage.RemoveFile(context, ControllerStorage.USERINFO);
+        ControllerStorage.RemoveFile(context, ControllerStorage.LASTLOGIN);
+    }
+
     public int getLastLogin() {
         return lastLogin;
     }

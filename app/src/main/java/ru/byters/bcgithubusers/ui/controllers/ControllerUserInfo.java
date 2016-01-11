@@ -2,6 +2,7 @@ package ru.byters.bcgithubusers.ui.controllers;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,17 +14,21 @@ import ru.byters.bcgithubusers.ui.adapters.UsersListAdapter;
 
 public class ControllerUserInfo {
 
-    private ModelUserInfo modelUserInfo;
+    private static ModelUserInfo modelUserInfo;
+    private static boolean isLoading;
+    private static boolean isCancelled;
     private UsersListAdapter usersListAdapter;
+    private SwipeRefreshLayout refreshLayout;
     private Context context;
-    private boolean isLoading;
 
     public ControllerUserInfo(Context context) {
         isLoading = false;
         this.context = context;
-        modelUserInfo = new ModelUserInfo(context);
-        if (modelUserInfo.isNull())
-            getUsers();
+        if (modelUserInfo == null) {
+            modelUserInfo = new ModelUserInfo(context);
+            if (modelUserInfo.isNull())
+                getUsers();
+        }
     }
 
     public ModelUserInfo getModelUserInfo() {
@@ -36,7 +41,8 @@ public class ControllerUserInfo {
 
     private void writeData(ArrayList<UserInfo> result) {
         if (result != null) {
-
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+            isCancelled = false;
             if (context != null) modelUserInfo.setData(context, result);
             if (usersListAdapter != null) usersListAdapter.addData(
                     ModelUserInfo.getUserInfoStartWithFilter(usersListAdapter.getFilterType(), result));
@@ -45,12 +51,14 @@ public class ControllerUserInfo {
     }
 
     private void addData(ArrayList<UserInfo> result) {
-        if (result != null) {
+        if (result != null && !isCancelled) {
             if (context != null) modelUserInfo.addData(context, result);
             if (usersListAdapter != null) usersListAdapter.addData(
                     ModelUserInfo.getUserInfoStartWithFilter(usersListAdapter.getFilterType(), result));
         }
         isLoading = false;
+        if (isCancelled)
+            getUsers();
     }
 
     public void getUsers() {
@@ -100,7 +108,15 @@ public class ControllerUserInfo {
         }.execute();
     }
 
-    public boolean isNoAdapter() {
-        return usersListAdapter == null;
+    public void setRefreshLayout(SwipeRefreshLayout refreshLayout){
+        this.refreshLayout = refreshLayout;
+    }
+
+    public void setIsCancelled(Context context, boolean isCancelled) {
+        ControllerUserInfo.isCancelled = isCancelled;
+        if (isCancelled) {
+            modelUserInfo.clearData(context);
+            getUsers();
+        }
     }
 }
