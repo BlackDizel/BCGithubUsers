@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import ru.byters.bcgithubusers.R;
 import ru.byters.bcgithubusers.model.UserInfo;
-import ru.byters.bcgithubusers.ui.controllers.ControllerUserInfo;
+import ru.byters.bcgithubusers.controllers.ControllerUserInfo;
 
 public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.ViewHolder> {
 
@@ -24,7 +24,8 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
     public UsersListAdapter(int filterType, ControllerUserInfo controllerUserInfo) {
         this.filterType = filterType;
         this.controllerUserInfo = controllerUserInfo;
-        data = controllerUserInfo.getModelUserInfo().getUserInfoStartWithFilter(filterType);
+        if (filterType != 0)
+            data = controllerUserInfo.getModelUserInfo().getUserInfoStartWithFilter(filterType);
     }
 
     public int getFilterType() {
@@ -32,11 +33,14 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
     }
 
     public void onScrolled() {
-        controllerUserInfo.getUsersMore();
+        if (filterType != 0)
+            controllerUserInfo.getUsersMore();
     }
 
     public void resetData() {
-        data = controllerUserInfo.getModelUserInfo().getUserInfoStartWithFilter(filterType);
+        if (filterType != 0)
+            data = controllerUserInfo.getModelUserInfo().getUserInfoStartWithFilter(filterType);
+        else data = null;
         notifyDataSetChanged();
     }
 
