@@ -96,7 +96,6 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
 
         @Override
         public void onDownloaded(String login, UserInfo data) {
-            //todo update data
             controllerUserInfo.getModelUserInfo().updateData(data);
             if (this.login.equals(login) && data != null)
                 tvFollowInfo.setText(String.format("%d/%d", data.getFollowers(), data.getFollowing()));
@@ -114,7 +113,6 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
 
             @Override
             protected UserInfo doInBackground(Void... params) {
-                //todo add v23 check permission
                 try {
                     return GithubService.getApi().getUserInfo(login).execute().body();
                 } catch (IOException e) {

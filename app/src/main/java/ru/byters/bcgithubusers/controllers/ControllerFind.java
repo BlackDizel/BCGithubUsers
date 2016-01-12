@@ -52,7 +52,6 @@ public class ControllerFind implements OnDownloaded {
 
         @Override
         protected ArrayList<UserInfo> doInBackground(Void... params) {
-            //todo implement v23 check permission
             try {
                 return GithubService.getApi().searchUsers(query).execute().body().getItems();
             } catch (IOException e) {
@@ -82,7 +81,6 @@ public class ControllerFind implements OnDownloaded {
 
         @Override
         protected ArrayList<UserInfo> doInBackground(Void... params) {
-            //todo implement v23 check permission
             try {
                 return GithubService.getApi().searchUsers(query, page).execute().body().getItems();
             } catch (IOException e) {

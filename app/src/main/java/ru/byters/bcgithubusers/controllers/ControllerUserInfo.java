@@ -62,7 +62,6 @@ public class ControllerUserInfo {
     }
 
     public void getUsers() {
-        //todo add v23 check permission
         if (isLoading) return;
         isLoading = true;
         new AsyncTask<Void, Void, ArrayList<UserInfo>>() {
@@ -86,7 +85,6 @@ public class ControllerUserInfo {
     }
 
     public void getUsersMore() {
-        //todo add v23 check permission
         if (isLoading) return;
         isLoading = true;
         new AsyncTask<Void, Void, ArrayList<UserInfo>>() {
